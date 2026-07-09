@@ -33,6 +33,9 @@ cleanup() {
 
 trap cleanup SIGINT SIGTERM
 
+# Remove the database file
+rm booking_system_backend/booking.db
+
 # Start Backend
 echo -e "${BLUE}📡 Starting Backend Server...${NC}"
 cd booking_system_backend
