@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cost Comparison: Bob vs GitHub Copilot · Bob field guide</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f8f9fa;
+    --surface2: #e9ecef;
+    --border: #dee2e6;
+    --accent: #0066cc;
+    --accent2: #00a896;
+    --warn: #d97706;
+    --text: #212529;
+    --muted: #495057;
+    --copilot: #6e40c9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+  }
+
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 900; font-size: 16px; letter-spacing: -1px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    flex: 1;
+    width: 100%;
+  }
+
+  .breadcrumb {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+
+  .hero { text-align: center; margin-bottom: 40px; }
+  .hero h1 { font-size: 38px; font-weight: 700; margin-bottom: 14px; }
+  .hero p {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 760px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .preliminary-banner {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--warn);
+    background: rgba(217,119,6,0.12);
+    color: var(--warn);
+  }
+  .pill.strong {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+  }
+  .pill.info {
+    border-color: var(--accent);
+    background: rgba(0,102,204,0.08);
+    color: var(--accent);
+  }
+
+  .headline-stat {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 40px 0 50px;
+    flex-wrap: wrap;
+  }
+
+  .stat-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 28px;
+    text-align: center;
+    min-width: 200px;
+  }
+
+  .stat-pill .label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .stat-pill .value {
+    font-size: 32px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-pill .sublabel {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .stat-pill.winner {
+    background: linear-gradient(135deg, rgba(0,168,150,0.12), rgba(0,102,204,0.08));
+    border-color: var(--accent2);
+  }
+  .stat-pill.winner .value { color: var(--accent2); }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px 40px;
+    margin-bottom: 40px;
+  }
+
+  .chart-card h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .chart-card .chart-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .chart-section-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 28px 0 14px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .chart-section-label:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+
+  .bar-row {
+    display: grid;
+    grid-template-columns: 130px 1fr 110px;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .bar-label { font-weight: 600; font-size: 15px; }
+  .bar-label .sub {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+  }
+
+  .bar-track {
+    height: 38px;
+    background: var(--surface2);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 14px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .bar-fill.copilot { background: linear-gradient(90deg, #5a3fc4, #8b5cf6); }
+  .bar-fill.bob     { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+
+  .bar-value {
+    font-weight: 600;
+    font-size: 18px;
+    text-align: right;
+  }
+
+  .test-detail {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .detail-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+
+  .detail-card .label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .detail-card .val {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .section { margin-bottom: 40px; }
+  .section-title { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
+  .section-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+
+  .qual-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    align-items: stretch;
+  }
+
+  .qual-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    border-left-width: 4px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .qual-card p {
+    flex: 1;
+  }
+  .qual-card.bob     { border-left-color: var(--accent); }
+  .qual-card.copilot { border-left-color: var(--copilot); }
+
+  .qual-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .qual-tag {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .qual-title { font-size: 15px; font-weight: 700; }
+
+  .qual-card p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  .frugality-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .frugality-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    border-top: 3px solid var(--accent);
+  }
+  .frugality-card .frug-num {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .frugality-card .frug-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .frugality-card p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--surface); }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--border);
+    color: var(--muted);
+  }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface); }
+  .check   { color: #15803d; font-weight: 700; }
+  .cross   { color: #dc2626; font-weight: 700; }
+  .partial { color: #d97706; font-weight: 600; }
+
+  .notes-card {
+    background: var(--surface);
+    border-left: 3px solid var(--warn);
+    border-radius: 6px;
+    padding: 18px 22px;
+  }
+  .notes-card h3 {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--warn);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .notes-card ul {
+    list-style: none;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .notes-card li::before { content: "→ "; color: var(--warn); font-weight: 600; }
+
+  .coming-soon {
+    text-align: center;
+    padding: 30px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .coming-soon strong {
+    display: block;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 30px 20px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="breadcrumb">
+    Guides &nbsp;/&nbsp; Cost Comparison
+  </div>
+
+  <div class="hero">
+    <h1>Bob vs GitHub Copilot: Cost Comparison</h1>
+    <p>A preliminary cost comparison on the same feature request: adding seat classes to a live Node.js travel-booking app. Same prompt, Plan → Agent mode. Bob got it right in one shot — GitHub Copilot required one additional iteration to correct its first draft. Bob completed the task 25% faster and gives developers full cost visibility, at a comparable price point.</p>
+    <div class="preliminary-banner">
+      <span class="pill strong">⚠ Work in Progress</span>
+      <span class="pill strong">🔒 Internal Only</span>
+      <span class="pill">Preliminary · One test</span>
+      <span class="pill info">July 2026</span>
+    </div>
+  </div>
+
+  <!-- Headline stats -->
+  <div class="headline-stat">
+    <div class="stat-pill">
+      <div class="label">GitHub Copilot</div>
+      <div class="value" style="color:var(--copilot);">$1.08</div>
+      <div class="sublabel">27 Premium Requests · Pro Plan</div>
+    </div>
+    <div class="stat-pill">
+      <div class="label">IBM Bob</div>
+      <div class="value" style="color:var(--accent);">$1.70</div>
+      <div class="sublabel">3.39 BobCoins ÷ 2</div>
+    </div>
+    <div class="stat-pill winner">
+      <div class="label">Bob is</div>
+      <div class="value">25% faster</div>
+      <div class="sublabel">correct in one shot · no rework</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-card">
+    <h2>Cost &amp; duration per project run</h2>
+    <div class="chart-sub">Single end-to-end run of the seat-class feature prompt — Plan mode then Agent mode.</div>
+
+    <div class="chart-section-label">Cost (USD)</div>
+
+    <div class="bar-row">
+      <div class="bar-label">GitHub Copilot<span class="sub">SONNET 4.6 · ×9 MULTIPLIER · PRO PLAN</span></div>
+      <div class="bar-track">
+        <!-- $1.08 / $1.70 = 63.5% -->
+        <div class="bar-fill copilot" style="width:63.5%;">$1.08</div>
+      </div>
+      <div class="bar-value" style="color:var(--copilot);">$1.08</div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">IBM Bob<span class="sub">3.39 BOBCOINS · DEFAULT</span></div>
+      <div class="bar-track">
+        <div class="bar-fill bob" style="width:100%;">$1.70</div>
+      </div>
+      <div class="bar-value" style="color:var(--accent);">$1.70</div>
+    </div>
+
+    <div class="chart-section-label">Duration (minutes) — lower is better</div>
+
+    <div class="bar-row">
+      <div class="bar-label">GitHub Copilot<span class="sub">WITH PARALLEL SUBTASKS</span></div>
+      <div class="bar-track">
+        <div class="bar-fill copilot" style="width:100%;">20 min</div>
+      </div>
+      <div class="bar-value" style="color:var(--copilot);">20 min</div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-label">IBM Bob<span class="sub">WITH PARALLEL SUBTASKS</span></div>
+      <div class="bar-track">
+        <div class="bar-fill bob" style="width:75%;">15 min</div>
+      </div>
+      <div class="bar-value" style="color:var(--accent);">15 min</div>
+    </div>
+  </div>
+
+  <!-- Test details -->
+  <div class="section">
+    <h2 class="section-title">Test details</h2>
+    <p class="section-subtitle">What was measured</p>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px 28px;font-size:14px;line-height:1.8;">
+      <p style="margin-bottom:16px;">The test consisted of planning and implementing a complex new feature in the <a href="https://github.com/jpradier/bob-galaxium-travels" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;">Galaxium Travels</a> application — a live Node.js travel-booking app. The feature adds seat class selection (Economy, Business, and Galaxium class) to the flight booking flow. Both tools received the exact same two-prompt sequence, starting in Plan mode and proceeding to Agent mode.</p>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <tbody>
+          <tr>
+            <td style="padding:7px 12px 7px 0;width:30%;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);font-weight:600;vertical-align:top;border-bottom:1px solid var(--border);">Source repo</td>
+            <td style="padding:7px 0;border-bottom:1px solid var(--border);"><a href="https://github.com/jpradier/bob-galaxium-travels" target="_blank" rel="noopener" style="color:var(--accent);">github.com/jpradier/bob-galaxium-travels</a></td>
+          </tr>
+          <tr>
+            <td style="padding:7px 12px 7px 0;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);font-weight:600;vertical-align:top;border-bottom:1px solid var(--border);">Mode sequence</td>
+            <td style="padding:7px 0;border-bottom:1px solid var(--border);">Plan mode → <em>"Proceed with the implementation"</em> → Agent mode (automatic switch in both tools)</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 12px 7px 0;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);font-weight:600;vertical-align:top;border-bottom:1px solid var(--border);">Prompts used</td>
+            <td style="padding:7px 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);">Plan mode:</span><br>
+              <em style="color:var(--text);">"I want to add seat classes to Galaxium Travels. Passengers should be able to choose Economy, Business, or Galaxium class when booking a flight."</em><br><br>
+              <span style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);">Agent mode:</span><br>
+              <em style="color:var(--text);">"Proceed with the implementation"</em>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:7px 12px 7px 0;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);font-weight:600;vertical-align:top;border-bottom:1px solid var(--border);">GitHub Copilot model</td>
+              <td style="padding:7px 0;border-bottom:1px solid var(--border);">Claude Sonnet 4.6 · ×9 Premium Request multiplier · Pro Plan ($10/month · 27 Premium Requests consumed = $1.08)</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 12px 7px 0;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);font-weight:600;vertical-align:top;">IBM Bob model</td>
+            <td style="padding:7px 0;">Default · 3.39 BobCoins consumed ($1.70 USD)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Prompts -->
+  <div class="section">
+    <h2 class="section-title">The prompts used</h2>
+    <p class="section-subtitle">Exact same two-prompt sequence given to both GitHub Copilot and Bob</p>
+
+    <div style="margin-bottom:12px;">
+      <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px;">Prompt 1 — Plan mode</div>
+      <pre style="font-size:12px;line-height:1.65;color:var(--text);white-space:pre-wrap;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;">I want to add seat classes to Galaxium Travels. Passengers should be able to choose Economy, Business, or Galaxium class when booking a flight.</pre>
+    </div>
+
+    <div>
+      <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px;">Prompt 2 — Agent mode (after reviewing the plan)</div>
+      <pre style="font-size:12px;line-height:1.65;color:var(--text);white-space:pre-wrap;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;">Proceed with the implementation</pre>
+    </div>
+  </div>
+
+  <!-- Qualitative observations -->
+  <div class="section">
+    <h2 class="section-title">Qualitative observations</h2>
+    <p class="section-subtitle">Beyond raw cost: what's different about how each tool works</p>
+
+    <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:12px;">IBM Bob</div>
+    <div class="qual-grid" style="margin-bottom:28px;">
+      <div class="qual-card bob">
+        <div class="qual-header">
+          <span class="qual-tag" style="background:var(--accent);">Bob</span>
+          <span class="qual-title">Correct in one shot — no rework</span>
+        </div>
+        <p>Bob produced a correct, complete implementation on the first attempt. GitHub Copilot's first draft contained errors that required one additional iteration to fix — adding time, tokens, and cognitive overhead for the developer.</p>
+      </div>
+      <div class="qual-card bob">
+        <div class="qual-header">
+          <span class="qual-tag" style="background:var(--accent);">Bob</span>
+          <span class="qual-title">Cost visible at every step</span>
+        </div>
+        <p>Bob surfaces consumption inline in the chat window after each task. Developers see the dollar impact of every iteration in real time, enabling immediate course corrections — tighten the prompt, disable an idle MCP server, or stop before an expensive re-run.</p>
+      </div>
+      <div class="qual-card bob">
+        <div class="qual-header">
+          <span class="qual-tag" style="background:var(--accent);">Bob</span>
+          <span class="qual-title">Diffs directly in the chat window</span>
+        </div>
+        <p>File differences appear inline in the chat window before any change is applied, keeping the developer in flow. Diffs are also accessible at any time from the Source Control menu — the same way GitHub Copilot exposes them — so neither approach is blocked.</p>
+      </div>
+      <div class="qual-card bob">
+        <div class="qual-header">
+          <span class="qual-tag" style="background:var(--accent);">Bob</span>
+          <span class="qual-title">Consumption analytics one click away</span>
+        </div>
+        <p>Bob's cost analytics are reachable with a single click directly from the chat view. GitHub Copilot requires navigating to a separate billing dashboard outside the IDE, adding friction for teams that want to monitor spend while they work.</p>
+      </div>
+      <div class="qual-card bob">
+        <div class="qual-header">
+          <span class="qual-tag" style="background:var(--accent);">Bob</span>
+          <span class="qual-title">Simpler permissions model</span>
+        </div>
+        <p>Bob's allow/deny permission flow is straightforward and IDE-agnostic. Approving or blocking a file write is a single explicit action, with no layer of extension or workspace-level configuration to navigate.</p>
+      </div>
+    </div>
+
+    <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--copilot);font-weight:600;margin-bottom:12px;">GitHub Copilot</div>
+    <div class="qual-grid">
+      <div class="qual-card copilot">
+        <div class="qual-header">
+          <span class="qual-tag" style="background:var(--copilot);">Copilot</span>
+          <span class="qual-title">Larger context window</span>
+        </div>
+        <p>GitHub Copilot ships with a 1 M-token context window vs Bob's 270 k. On very large codebases this delays compaction, but in this test it did not translate to a speed or quality advantage — Copilot ran parallel subtasks yet still took 25% longer.</p>
+      </div>
+      <div class="qual-card copilot">
+        <div class="qual-header">
+          <span class="qual-tag" style="background:var(--copilot);">Copilot</span>
+          <span class="qual-title">Opaque cost model</span>
+        </div>
+        <p>The $3.60 figure represents Premium Request credits consumed against the Pro Plan flat fee. Actual marginal cost is invisible during work. Once the monthly allowance is exhausted, overage rates apply — making real per-task cost hard to track without a separate billing dashboard.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Frugality -->
+  <div class="section">
+    <h2 class="section-title">Bob's frugality practices</h2>
+    <p class="section-subtitle">Cost transparency drives spending-aware habits — not available in Copilot</p>
+    <div class="frugality-grid">
+      <div class="frugality-card">
+        <div class="frug-num">1</div>
+        <div class="frug-title">Write more specific prompts</div>
+        <p>Seeing cost per turn in real time teaches developers that vague prompts lead to clarification rounds — and that each round costs money. Specificity up front reduces iterations and total spend.</p>
+      </div>
+      <div class="frugality-card">
+        <div class="frug-num">2</div>
+        <div class="frug-title">Disable unused MCP servers</div>
+        <p>Every connected MCP server adds tokens to the system context on every request. Bob makes active servers visible and easy to toggle — removing idle ones cuts baseline cost per turn immediately.</p>
+      </div>
+      <div class="frugality-card">
+        <div class="frug-num">3</div>
+        <div class="frug-title">Automatic context compaction</div>
+        <p>Bob compresses conversation history when the 270 k window fills, keeping per-turn costs predictable. Copilot's 1 M window silently accumulates context, increasing cost per API call without feedback to the developer.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature comparison table -->
+  <div class="section">
+    <h2 class="section-title">Feature comparison</h2>
+    <p class="section-subtitle">Developer experience across nine dimensions</p>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:36%">Feature</th>
+          <th style="width:32%">IBM Bob</th>
+          <th style="width:32%">GitHub Copilot</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Live cost display per task</td>
+          <td><span class="check">✓</span> Shown inline in chat</td>
+          <td><span class="cross">✗</span> Not visible during work</td>
+        </tr>
+        <tr>
+          <td>Jump to consumption analytics</td>
+          <td><span class="check">✓</span> One click from chat</td>
+          <td><span class="partial">Partial</span> — separate billing dashboard</td>
+        </tr>
+        <tr>
+          <td>File diffs in chat window</td>
+          <td><span class="check">✓</span> Inline before apply</td>
+          <td><span class="partial">Partial</span> — editor diff panel only</td>
+        </tr>
+        <tr>
+          <td>Context compaction</td>
+          <td><span class="check">✓</span> Automatic at 270 k</td>
+          <td><span class="partial">Manual</span> — 1 M window, user-triggered</td>
+        </tr>
+        <tr>
+          <td>Plan → Agent mode handoff</td>
+          <td><span class="check">✓</span> Automatic, seamless</td>
+          <td><span class="check">✓</span> Automatic</td>
+        </tr>
+        <tr>
+          <td>Parallel subtask execution</td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Caveats -->
+  <div class="section">
+    <h2 class="section-title">Caveats</h2>
+    <p class="section-subtitle">What this number is, and isn't</p>
+    <div class="notes-card">
+      <h3>Read before quoting</h3>
+      <ul>
+        <li>This is a single run, not a statistically significant benchmark.</li>
+        <li>Cost reflects raw token / credit consumption end-to-end on this one prompt; output quality and completeness still need a side-by-side review.</li>
+        <li>Real-world cost depends heavily on prompt style, iteration count, and how often the user redirects the agent.</li>
+        <li>Copilot's $1.08 represents 27 Premium Requests (Claude Sonnet 4.6 at ×9 multiplier) consumed against the Pro Plan $10/month allowance. Once the allowance is exhausted, overage rates apply — direct comparison with Bob's metered cost requires care.</li>
+        <li>Bob's dollar value shown on this page = BobCoins ÷ 2. Bob consumed 3.39 BobCoins = <strong>$1.70 USD</strong>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Coming soon -->
+  <div class="section">
+    <div class="coming-soon">
+      <strong>More benchmarks coming</strong>
+      Additional comparison tests will be added here as they are run: different project sizes, languages, and SDLC stages.
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  WW Team · 2026 &nbsp;·&nbsp; Made with IBM Bob
+</div>
+
+</body>
+</html>
